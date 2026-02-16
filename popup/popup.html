@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Dark Mode</h1>
+
+    <div class="setting-row">
+      <span class="label">グローバル</span>
+      <label class="toggle">
+        <input type="checkbox" id="globalToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <hr>
+
+    <div class="setting-row" id="siteRow">
+      <span class="label" id="siteLabel">現在のサイト</span>
+      <label class="toggle">
+        <input type="checkbox" id="siteToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <hr>
+
+    <h2>サイト別設定</h2>
+    <ul id="siteList"></ul>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
