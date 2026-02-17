@@ -1,4 +1,3 @@
-const globalToggle = document.getElementById("globalToggle");
 const siteToggle = document.getElementById("siteToggle");
 const siteLabel = document.getElementById("siteLabel");
 const siteList = document.getElementById("siteList");
@@ -29,16 +28,10 @@ async function init() {
 }
 
 function render(data) {
-  globalToggle.checked = data.enabled;
-
-  // Site toggle
+  // Site toggle: ON only if explicitly enabled for this site
   if (currentHostname) {
     const siteConfig = data.siteSettings[currentHostname];
-    if (siteConfig && typeof siteConfig.enabled === "boolean") {
-      siteToggle.checked = siteConfig.enabled;
-    } else {
-      siteToggle.checked = data.enabled;
-    }
+    siteToggle.checked = siteConfig && siteConfig.enabled === true;
   }
 
   // Site list
@@ -52,21 +45,17 @@ function renderSiteList(siteSettings) {
   if (entries.length === 0) {
     const li = document.createElement("li");
     li.className = "empty-message";
-    li.textContent = "サイト別設定なし";
+    li.textContent = "設定済みのサイトなし";
     siteList.appendChild(li);
     return;
   }
 
-  for (const [hostname, config] of entries) {
+  for (const [hostname] of entries) {
     const li = document.createElement("li");
 
     const nameSpan = document.createElement("span");
     nameSpan.className = "site-name";
     nameSpan.textContent = hostname;
-
-    const statusSpan = document.createElement("span");
-    statusSpan.className = "site-status";
-    statusSpan.textContent = config.enabled ? "ON" : "OFF";
 
     const removeBtn = document.createElement("button");
     removeBtn.className = "remove-btn";
@@ -74,22 +63,12 @@ function renderSiteList(siteSettings) {
     removeBtn.addEventListener("click", () => removeSite(hostname));
 
     li.appendChild(nameSpan);
-    li.appendChild(statusSpan);
     li.appendChild(removeBtn);
     siteList.appendChild(li);
   }
 }
 
 // Event handlers
-globalToggle.addEventListener("change", () => {
-  chrome.runtime.sendMessage(
-    { action: "setGlobalEnabled", enabled: globalToggle.checked },
-    (data) => {
-      if (data) render(data);
-    }
-  );
-});
-
 siteToggle.addEventListener("change", () => {
   if (!currentHostname) return;
   chrome.runtime.sendMessage(
